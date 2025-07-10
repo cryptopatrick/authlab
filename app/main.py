@@ -2,6 +2,7 @@ from typing import Union
 from fastapi import FastAPI, Request, Response, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from starlette.middleware.base import BaseHTTPMiddleware
 
@@ -17,6 +18,13 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+
+app = FastAPI()
+app.mount("/", StaticFiles(directory="static",html = True), name="static")
+
+
 
 class LoginData(BaseModel):
     username: str
@@ -63,4 +71,4 @@ async def secure_data():
 
 @app.get("/")
 async def root():
-    return {"message": "Root which does not require authentication."}
+    return FileResponse('index.html')
